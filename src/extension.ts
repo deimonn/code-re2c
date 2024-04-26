@@ -55,10 +55,8 @@ function publishDiagnostics(document: vscode.TextDocument) {
         // Check for error.
         if (error) {
             outputChannel.appendLine(
-                `[${timestamp()}] error: ${error.message}`
+                `[${timestamp()}] Errored: ${error.message}`
             )
-
-            return
         }
 
         // Parse diagnostics.
