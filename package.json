@@ -1,0 +1,99 @@
+{
+    "name": "code-re2c",
+    "version": "0.1.0",
+    "displayName": "Code re2c",
+    "description": "Code in re2c! Linting and syntax highlighting for re2c.",
+    "publisher": "deimonn",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/deimonn/code-re2c"
+    },
+    "icon": "assets/logo.png",
+    "keywords": [
+        "re2c",
+        "re2go",
+        "re2rust",
+        "lex",
+        "lexer",
+        "language"
+    ],
+    "extensionKind": [
+        "workspace"
+    ],
+    "engines": {
+        "vscode": "^1.78.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "main": "./out/extension.js",
+    "activationEvents": [
+        "onLanguage:c",
+        "onLanguage:cpp",
+        "onLanguage:go",
+        "onLanguage:rust"
+    ],
+    "contributes": {
+        "configuration": {
+            "title": "re2c",
+            "properties": {
+                "code-re2c.re2c.path": {
+                    "type": "string",
+                    "scope": "machine-overridable",
+                    "description": "The name or path to the re2c binary.",
+                    "default": "re2c",
+                    "order": 1
+                },
+                "code-re2c.re2c.arguments": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "scope": "machine-overridable",
+                    "description": "Additional arguments to pass to the re2c binary; e.g. to enable warnings.",
+                    "default": ["-W"],
+                    "order": 2
+                }
+            }
+        },
+        "configurationDefaults": {
+            "files.associations": {
+                "*.re": "c",
+                "*.c.re": "c",
+                "*.cc.re": "cpp",
+                "*.cpp.re": "cpp",
+                "*.cxx.re": "cpp",
+                "*.go.re": "go",
+                "*.rs.re": "rust"
+            }
+        },
+        "grammars": [
+            {
+                "scopeName": "source.re2c",
+                "path": "./syntaxes/re2c.tmLanguage.json",
+                "injectTo": [
+                    "source.c",
+                    "source.cpp",
+                    "source.go",
+                    "source.rust"
+                ]
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "lint": "eslint src --ext ts"
+    },
+    "devDependencies": {
+        "@stylistic/eslint-plugin": "^1.6.2",
+        "@types/node": "20.x",
+        "@types/vscode": "^1.78.0",
+        "@typescript-eslint/eslint-plugin": "^7.1.0",
+        "@typescript-eslint/parser": "^7.1.0",
+        "eslint": "^8.57.0",
+        "typescript": "^5.3.3"
+    }
+}
