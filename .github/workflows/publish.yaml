@@ -1,0 +1,43 @@
+name: Publish and release extension
+
+on:
+  push:
+    tags:
+      - v**
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 21.x
+
+    - name: Install extension dependencies
+      run: npm ci
+
+    - name: Package extension
+      run: npx -p @vscode/vsce --yes -c 'vsce package'
+
+    - name: Publish on Visual Studio Marketplace
+      run: npx -p @vscode/vsce --yes -c 'vsce publish -i *.vsix'
+      env:
+        VSCE_PAT: ${{ secrets.VSCE_PAT }}
+
+    - name: Publish on Eclipse Open VSX
+      run: npx -p ovsx --yes -c 'ovsx publish *.vsix'
+      env:
+        OVSX_PAT: ${{ secrets.OVSX_PAT }}
+
+    - name: Create release on GitHub
+      uses: softprops/action-gh-release@v1
+      with:
+        files: '*.vsix'
+        body: See [CHANGELOG.md](https://github.com/deimonn/oro-theme/blob/master/CHANGELOG.md) for a list of additions, changes and fixes.
+        prerelease: ${{ endsWith(github.ref, '-preview') }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
