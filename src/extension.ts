@@ -5,7 +5,7 @@
 
   This file is licensed under the MIT License.
 
-  See https://raw.githubusercontent.com/deimonn/code-ninjutsu/master/LICENSE for
+  See https://raw.githubusercontent.com/deimonn/code-re2c/master/LICENSE for
   license information.
  *────────────────────────────────────────────────────────────────────────────*/
 
