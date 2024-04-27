@@ -265,7 +265,7 @@
                 },
                 {
                     "comment": "Character class.",
-                    "match": "(\\[)((?:\\\\\\[|[^\\]\n])*)(])",
+                    "match": "(\\[)((?:\\\\\\]|[^\\]\n])*)(])",
                     "captures": {
                         "1": { "name": "punctuation.definition.character-class.begin.re2c" },
                         "2": {
