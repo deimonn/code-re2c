@@ -276,7 +276,7 @@
                                     "name": "keyword.operator.negate.re2c"
                                 },
                                 {
-                                    "match": "(?<=.)-(?=.)",
+                                    "match": "(?<=[^\\[])-(?=.)",
                                     "name": "keyword.operator.range.re2c"
                                 },
                                 {
