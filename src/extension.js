@@ -11,7 +11,7 @@
 // SPDX-License-Identifier: MIT
 
 const child_process = require("child_process");
-// const minimatch = require("minimatch");
+const minimatch = require("minimatch");
 const vscode = require("vscode");
 
 /**
