@@ -84,8 +84,16 @@
                 "injectTo": [
                     "source.c",
                     "source.cpp",
+                    "source.d",
                     "source.go",
-                    "source.rust"
+                    "source.haskell",
+                    "source.java",
+                    "source.js",
+                    "source.ocaml",
+                    "source.python",
+                    "source.rust",
+                    "source.v",
+                    "source.zig"
                 ]
             }
         ]
