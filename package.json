@@ -29,10 +29,7 @@
     ],
     "main": "./out/extension.js",
     "activationEvents": [
-        "onLanguage:c",
-        "onLanguage:cpp",
-        "onLanguage:go",
-        "onLanguage:rust"
+        "onStartupFinished"
     ],
     "contributes": {
         "configuration": {
