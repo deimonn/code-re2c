@@ -149,6 +149,15 @@ function updateDocument(document) {
 
     const re2c = configuration.get("re2c.path") ?? "re2c";
     const args = configuration.get("re2c.arguments") ?? ["-W"];
+    const ignore = configuration.get("re2c.ignore") ?? [];
+
+    // Skip ignored files.
+    for (const glob of ignore) {
+        if (minimatch.minimatch(document.uri.fsPath, glob)) {
+            resetDocument(document);
+            return;
+        }
+    }
 
     // Detect language.
     const detectedLanguage = detectLanguage(document, configuration);
