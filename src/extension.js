@@ -75,14 +75,14 @@ function timestamp() {
  */
 function detectLanguage(document, configuration) {
     // Fetch configuration.
-    const extensions = configuration.get("re2c.extensions") ?? ["re"];
+    const detect = configuration.get("re2c.detect") ?? ["**/*.re"];
     const customLanguageId = configuration.get("re2c.customLanguageId") ?? null;
 
-    // Ensure detection is enabled for this document type.
+    // Ensure detection is enabled for this document.
     let detectionEnabled = false;
 
-    for (const extension of extensions) {
-        if (document.uri.fsPath.endsWith(`.${extension}`)) {
+    for (const glob of detect) {
+        if (minimatch.minimatch(document.uri.fsPath, glob)) {
             detectionEnabled = true;
             break;
         }
