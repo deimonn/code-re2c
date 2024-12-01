@@ -58,22 +58,32 @@
                     "default": ["-W"],
                     "order": 2
                 },
-                "code-re2c.re2c.extensions": {
+                "code-re2c.re2c.ignore": {
                     "type": "array",
                     "items": {
                         "type": "string"
                     },
                     "scope": "machine-overridable",
-                    "description": "List of extensions that should participate in re2c language detection.",
-                    "default": ["re"],
+                    "description": "Files matching these globs will be ignored by this extension.",
+                    "default": [],
                     "order": 3
+                },
+                "code-re2c.re2c.detect": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "scope": "machine-overridable",
+                    "description": "Files matching these globs will participate in re2c language detection.",
+                    "default": ["**/*.re"],
+                    "order": 4
                 },
                 "code-re2c.re2c.customLanguageId": {
                     "type": ["string", "null"],
                     "scope": "machine-overridable",
                     "description": "The language to assume for re2c files with the `--lang none` flag.",
                     "default": null,
-                    "order": 4
+                    "order": 5
                 }
             }
         },
