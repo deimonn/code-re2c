@@ -60,17 +60,6 @@
                 }
             }
         },
-        "configurationDefaults": {
-            "files.associations": {
-                "*.re": "c",
-                "*.c.re": "c",
-                "*.cc.re": "cpp",
-                "*.cpp.re": "cpp",
-                "*.cxx.re": "cpp",
-                "*.go.re": "go",
-                "*.rs.re": "rust"
-            }
-        },
         "grammars": [
             {
                 "scopeName": "source.re2c",
