@@ -43,7 +43,7 @@
                 },
                 {
                     "comment": "Block followed by any number of identifiers.",
-                    "begin": "\\s*(/\\*)(!)(max|maxnmatch|stags|mtags|getstate|conditions)(:)(re2c)\\b((?::[A-Za-z_][A-Za-z_0-9]*)*)",
+                    "begin": "\\s*(/\\*)(!)(max|maxnmatch|stags|mtags|getstate|conditions|svars|mvars)(:)(re2c)\\b((?::[A-Za-z_][A-Za-z_0-9]*)*)",
                     "beginCaptures": {
                         "1": { "name": "punctuation.definition.comment.begin.c" },
                         "2": { "name": "punctuation.definition.directive.re2c" },
