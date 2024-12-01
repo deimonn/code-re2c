@@ -107,5 +107,8 @@
                 ]
             }
         ]
+    },
+    "dependencies": {
+        "minimatch": "^10.0.1"
     }
 }
