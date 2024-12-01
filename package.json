@@ -57,6 +57,23 @@
                     "description": "Additional arguments to pass to the re2c binary; e.g. to enable warnings.",
                     "default": ["-W"],
                     "order": 2
+                },
+                "code-re2c.re2c.extensions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "scope": "machine-overridable",
+                    "description": "List of extensions that should participate in re2c language detection.",
+                    "default": ["re"],
+                    "order": 3
+                },
+                "code-re2c.re2c.customLanguageId": {
+                    "type": ["string", "null"],
+                    "scope": "machine-overridable",
+                    "description": "The language to assume for re2c files with the `--lang none` flag.",
+                    "default": null,
+                    "order": 4
                 }
             }
         },
