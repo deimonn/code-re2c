@@ -11,12 +11,18 @@
     },
     "icon": "assets/logo.png",
     "keywords": [
-        "re2c",
-        "re2go",
-        "re2rust",
-        "lex",
-        "lexer",
-        "language"
+        "re2c", "c", "cpp", "c++",
+        "re2d", "d",
+        "re2go", "go",
+        "re2hs", "hs", "haskell",
+        "re2java", "java",
+        "re2js", "js", "javascript",
+        "re2ocaml", "ocaml",
+        "re2py", "py", "python",
+        "re2rust", "rs", "rust",
+        "re2v", "v",
+        "re2zig", "zig",
+        "lex", "lexer", "generator"
     ],
     "extensionKind": [
         "workspace"
