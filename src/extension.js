@@ -11,6 +11,7 @@
 // SPDX-License-Identifier: MIT
 
 const child_process = require("child_process");
+// const minimatch = require("minimatch");
 const vscode = require("vscode");
 
 /**
@@ -70,11 +71,10 @@ function timestamp() {
 /**
  * Detect and update a document's language.
  * @param {vscode.TextDocument} document
+ * @param {vscode.WorkspaceConfiguration} configuration
  */
-function detectLanguage(document) {
+function detectLanguage(document, configuration) {
     // Fetch configuration.
-    const configuration = vscode.workspace.getConfiguration("code-re2c");
-
     const extensions = configuration.get("re2c.extensions") ?? ["re"];
     const customLanguageId = configuration.get("re2c.customLanguageId") ?? null;
 
@@ -144,14 +144,14 @@ function detectLanguage(document) {
  * @param {vscode.TextDocument} document
  */
 function updateDocument(document) {
-    // Detect language.
-    const detectedLanguage = detectLanguage(document);
-
     // Fetch configuration.
     const configuration = vscode.workspace.getConfiguration("code-re2c");
 
     const re2c = configuration.get("re2c.path") ?? "re2c";
     const args = configuration.get("re2c.arguments") ?? ["-W"];
+
+    // Detect language.
+    const detectedLanguage = detectLanguage(document, configuration);
 
     // Push language flag to arguments.
     switch (document.languageId) {
