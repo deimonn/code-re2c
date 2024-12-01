@@ -72,20 +72,5 @@
                 ]
             }
         ]
-    },
-    "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "lint": "eslint src --ext ts"
-    },
-    "devDependencies": {
-        "@stylistic/eslint-plugin": "^1.6.2",
-        "@types/node": "20.x",
-        "@types/vscode": "^1.78.0",
-        "@typescript-eslint/eslint-plugin": "^7.1.0",
-        "@typescript-eslint/parser": "^7.1.0",
-        "eslint": "^8.57.0",
-        "typescript": "^5.3.3"
     }
 }
