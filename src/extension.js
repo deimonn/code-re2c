@@ -162,7 +162,7 @@ function updateDocument(document) {
     // Detect language.
     const detectedLanguage = detectLanguage(document, configuration);
 
-    // Push language flag to arguments.
+    // Push language flag to arguments; skip unsupported languages.
     switch (document.languageId) {
         case "c":
         case "d":
