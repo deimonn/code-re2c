@@ -1,4 +1,4 @@
-name: Lint and build extension
+name: Build extension
 
 on:
   push:
@@ -20,5 +20,5 @@ jobs:
     - name: Install extension dependencies
       run: npm ci
 
-    - name: Build and package the extension
+    - name: Package the extension
       run: npx -p @vscode/vsce -c 'vsce package'
