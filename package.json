@@ -1,6 +1,6 @@
 {
     "name": "code-re2c",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "displayName": "Code re2c",
     "description": "Code in re2c! Experimental linting and syntax highlighting.",
     "publisher": "deimonn",
