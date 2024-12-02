@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/deimonn/code-re2c/refs/heads/master/assets/logo.png" style="width: 50%">
+  <img src="https://raw.githubusercontent.com/deimonn/code-re2c/refs/heads/master/assets/logo.png">
 </p>
 
 Experimental linting and syntax highlighting for [re2c](http://re2c.org)!
