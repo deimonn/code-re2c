@@ -141,9 +141,28 @@ function detectLanguage(document, configuration) {
 
 /**
  * Detect language and publish diagnostics for the document.
+ *
+ * If `force` is true, updates the document regardless of whether its open in an editor yet or not.
+ *
  * @param {vscode.TextDocument} document
+ * @param {boolean} force
  */
-function updateDocument(document) {
+function updateDocument(document, force) {
+    // Only operate on text documents that are open on the editor, unless `force` is true.
+    if (!force) {
+        let openInEditor = false;
+
+        for (const editor of vscode.window.visibleTextEditors) {
+            if (editor.document.uri == document.uri) {
+                openInEditor = true;
+            }
+        }
+
+        if (!openInEditor) {
+            return;
+        }
+    }
+
     // Fetch configuration.
     const configuration = vscode.workspace.getConfiguration("code-re2c");
 
@@ -288,8 +307,8 @@ async function activate(context) {
         diagnosticCollection = vscode.languages.createDiagnosticCollection("re2c"),
 
         // Update event.
-        vscode.workspace.onDidOpenTextDocument(updateDocument),
-        vscode.workspace.onDidSaveTextDocument(updateDocument),
+        vscode.workspace.onDidOpenTextDocument((document) => updateDocument(document, true)),
+        vscode.workspace.onDidSaveTextDocument((document) => updateDocument(document, false)),
 
         // Reset event.
         vscode.workspace.onDidCloseTextDocument(resetDocument)
