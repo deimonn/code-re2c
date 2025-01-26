@@ -78,12 +78,19 @@
                     "default": ["**/*.re"],
                     "order": 4
                 },
+                "code-re2c.re2c.defaultLanguageId": {
+                    "type": ["string", "null"],
+                    "scope": "machine-overridable",
+                    "description": "Language to assume by default for re2c files that fail language detection.",
+                    "default": null,
+                    "order": 5
+                },
                 "code-re2c.re2c.customLanguageId": {
                     "type": ["string", "null"],
                     "scope": "machine-overridable",
                     "description": "Language to assume for re2c files with the `--lang none` flag.",
                     "default": null,
-                    "order": 5
+                    "order": 6
                 }
             }
         },

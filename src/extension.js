@@ -94,6 +94,7 @@ function match(path, globs) {
 function detectLanguage(document, configuration) {
     // Fetch configuration.
     const customLanguageId = configuration.get("re2c.customLanguageId") ?? null;
+    const defaultLanguageId = configuration.get("re2c.defaultLanguageId") ?? null;
 
     // Fetch first document line.
     const line = document.lineAt(0).text;
@@ -109,8 +110,12 @@ function detectLanguage(document, configuration) {
         }
     }
 
-    // No keyword found; no detection will be done.
+    // No keyword found; attempt to default the language and give up detection.
     if (language === null) {
+        if (defaultLanguageId && registeredLanguages.includes(defaultLanguageId)) {
+            vscode.languages.setTextDocumentLanguage(document, defaultLanguageId);
+        }
+
         return;
     }
 
