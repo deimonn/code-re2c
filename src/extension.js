@@ -69,28 +69,31 @@ function timestamp() {
 }
 
 /**
+ * Checks if the path is satisfied by any of the given globs.
+ * @param {string} path
+ * @param {string[]} globs
+ */
+function match(path, globs) {
+    let matched = false;
+
+    for (const glob of globs) {
+        if (minimatch.minimatch(path, glob)) {
+            matched = true;
+            break;
+        }
+    }
+
+    return matched;
+}
+
+/**
  * Detect and update a document's language.
  * @param {vscode.TextDocument} document
  * @param {vscode.WorkspaceConfiguration} configuration
  */
 function detectLanguage(document, configuration) {
     // Fetch configuration.
-    const detect = configuration.get("re2c.detect") ?? ["**/*.re"];
     const customLanguageId = configuration.get("re2c.customLanguageId") ?? null;
-
-    // Ensure detection is enabled for this document.
-    let detectionEnabled = false;
-
-    for (const glob of detect) {
-        if (minimatch.minimatch(document.uri.fsPath, glob)) {
-            detectionEnabled = true;
-            break;
-        }
-    }
-
-    if (!detectionEnabled) {
-        return null;
-    }
 
     // Fetch first document line.
     const line = document.lineAt(0).text;
@@ -108,7 +111,7 @@ function detectLanguage(document, configuration) {
 
     // No keyword found; no detection will be done.
     if (language === null) {
-        return null;
+        return;
     }
 
     // Look for optional flag.
@@ -123,7 +126,7 @@ function detectLanguage(document, configuration) {
     // User-defined language handling.
     if (language === "user-defined") {
         if (customLanguageId === null) {
-            return null;
+            return;
         }
 
         language = customLanguageId;
@@ -131,12 +134,11 @@ function detectLanguage(document, configuration) {
 
     // Also ensure the language ID is registered.
     if (!registeredLanguages.includes(language)) {
-        return null;
+        return;
     }
 
     // Update document language.
     vscode.languages.setTextDocumentLanguage(document, language);
-    return language;
 }
 
 /**
@@ -150,15 +152,8 @@ function detectLanguage(document, configuration) {
 function updateDocument(document, force) {
     // Only operate on text documents that are open on the editor, unless `force` is true.
     if (!force) {
-        let openInEditor = false;
-
-        for (const editor of vscode.window.visibleTextEditors) {
-            if (editor.document.uri == document.uri) {
-                openInEditor = true;
-            }
-        }
-
-        if (!openInEditor) {
+        let index = vscode.window.visibleTextEditors.findIndex(e => e.document.uri == document.uri);
+        if (index == -1) {
             return;
         }
     }
@@ -168,21 +163,24 @@ function updateDocument(document, force) {
 
     const re2c = configuration.get("re2c.path") ?? "re2c";
     const args = configuration.get("re2c.arguments") ?? ["-W"];
+    const detect = configuration.get("re2c.detect") ?? ["**/*.re"];
     const ignore = configuration.get("re2c.ignore") ?? [];
+    const customLanguageId = configuration.get("re2c.customLanguageId") ?? null;
 
     // Skip ignored files.
-    for (const glob of ignore) {
-        if (minimatch.minimatch(document.uri.fsPath, glob)) {
-            resetDocument(document);
-            return;
-        }
+    if (match(document.uri.fsPath, ignore)) {
+        resetDocument(document);
+        return;
     }
 
-    // Detect language.
-    const detectedLanguage = detectLanguage(document, configuration);
+    // Detect language for files where detection is enabled.
+    if (match(document.uri.fsPath, detect)) {
+        detectLanguage(document, configuration);
+    }
 
     // Push language flag to arguments; skip unsupported languages.
     switch (document.languageId) {
+        // Known language.
         case "c":
         case "d":
         case "go":
@@ -195,23 +193,24 @@ function updateDocument(document, force) {
         case "zig":
             args.push("--lang", document.languageId);
             break;
-
         case "cpp":
             args.push("--lang", "c");
             break;
-
         case "javascript":
             args.push("--lang", "js");
             break;
 
+        // Other.
         default:
-            if (detectedLanguage === null) {
-                resetDocument(document);
-                return;
+            // Custom language.
+            if (document.languageId === customLanguageId) {
+                args.push("--lang", "none");
+                break;
             }
 
-            args.push("--lang", "none");
-            break;
+            // Unknown language.
+            resetDocument(document);
+            return;
     }
 
     // Push document path to arguments.
