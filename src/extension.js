@@ -1,6 +1,6 @@
 /*── extension.js ── Main script for code-re2c ──*
  │
- │ Copyright (c) 2024 Deimonn (a.k.a. Nahuel S. Cisterna)
+ │ Copyright (c) 2024-2025 Deimonn (a.k.a. Nahuel S. Cisterna)
  │
  │ This file is licensed under the MIT License.
  │
