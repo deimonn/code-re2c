@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0](https://github.com/deimonn/code-re2c/compare/v0.2.1...v0.3.0) - 2025-01-26
+
+### Added
+
+- Added a warning notification when language detection for a file fails, together with fix suggestions
+- Added an error notification when a language identifier provided in the settings is not registered
+- Added `defaultLanguageId` setting to default the language of a file matching the `detect` glob but whose language could not be detected
+
+### Fixed
+
+- Fixed an important bug where the extension would start running the `re2c` binary over every single modified file during a "replace all" operation, causing significant lag
+
 ## [0.2.1](https://github.com/deimonn/code-re2c/compare/v0.2.0...v0.2.1) - 2024-12-02
 
 ### Fixed
