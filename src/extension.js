@@ -110,11 +110,57 @@ function detectLanguage(document, configuration) {
         }
     }
 
-    // No keyword found; attempt to default the language and give up detection.
+    // No keyword found.
     if (language === null) {
-        if (defaultLanguageId && registeredLanguages.includes(defaultLanguageId)) {
+        // Attempt to default the language.
+        if (defaultLanguageId) {
+            if (!registeredLanguages.includes(defaultLanguageId)) {
+                vscode.window.showErrorMessage(
+                    `No registered language with identifier "${defaultLanguageId}".`
+                );
+
+                return;
+            }
+
             vscode.languages.setTextDocumentLanguage(document, defaultLanguageId);
+            return;
         }
+
+        // Show language detection failure notification.
+        vscode.window.showWarningMessage(
+            `Could not detect language of document "${document.uri.fsPath}"; consider adding ` +
+            `the re2c invocation as a comment at the top, or setting a default language to ` +
+            `assume in the settings.`,
+            "Add Comment", "Go to Settings", "Dismiss"
+        ).then(option => {
+            // Fix with comment.
+            if (option === "Add Comment") {
+                const textEditor = vscode.window.activeTextEditor;
+
+                textEditor
+                    .edit((b) => b.insert(new vscode.Position(0, 0), "// re2c --lang c\n"))
+                    .then(() => {
+                        vscode.window.showTextDocument(textEditor.document, {
+                            selection: new vscode.Range(
+                                new vscode.Position(0, 0),
+                                new vscode.Position(0, 16)
+                            )
+                        });
+                    });
+
+                return;
+            }
+
+            // Fix with setting.
+            if (option === "Go to Settings") {
+                vscode.commands.executeCommand(
+                    "workbench.action.openSettings",
+                    "code-re2c.re2c.defaultLanguageId"
+                );
+
+                return;
+            }
+        });
 
         return;
     }
@@ -130,14 +176,25 @@ function detectLanguage(document, configuration) {
 
     // User-defined language handling.
     if (language === "user-defined") {
+        // None set; give up detection.
         if (customLanguageId === null) {
             return;
         }
 
+        // Check that the ID is registed, or show an error otherwise.
+        if (!registeredLanguages.includes(customLanguageId)) {
+            vscode.window.showErrorMessage(
+                `No registered language with identifier "${customLanguageId}".`
+            );
+
+            return;
+        }
+
+        // Set language.
         language = customLanguageId;
     }
 
-    // Also ensure the language ID is registered.
+    // Ensure the language ID is registered.
     if (!registeredLanguages.includes(language)) {
         return;
     }
