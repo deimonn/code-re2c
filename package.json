@@ -81,7 +81,7 @@
                 "code-re2c.re2c.customLanguageId": {
                     "type": ["string", "null"],
                     "scope": "machine-overridable",
-                    "description": "The language to assume for re2c files with the `--lang none` flag.",
+                    "description": "Language to assume for re2c files with the `--lang none` flag.",
                     "default": null,
                     "order": 5
                 }
