@@ -44,7 +44,7 @@
                 "code-re2c.re2c.path": {
                     "type": "string",
                     "scope": "machine-overridable",
-                    "description": "The name or path to the re2c binary.",
+                    "description": "Name or path to the re2c binary.",
                     "default": "re2c",
                     "order": 1
                 },
