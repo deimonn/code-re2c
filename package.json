@@ -33,7 +33,7 @@
     "categories": [
         "Programming Languages"
     ],
-    "main": "./src/extension.js",
+    "main": "./out/extension.js",
     "activationEvents": [
         "onStartupFinished"
     ],
@@ -115,11 +115,19 @@
             }
         ]
     },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./"
+    },
     "dependencies": {
         "minimatch": "^10.0.1"
     },
     "devDependencies": {
+        "@types/node": "22.x",
+        "@types/vscode": "^1.78.0",
         "@vscode/vsce": "^3.2.1",
-        "ovsx": "^0.10.1"
+        "ovsx": "^0.10.1",
+        "typescript": "^5.7.3"
     }
 }

@@ -14,5 +14,6 @@
 .DS_store
 
 # Build artifacts and outputs.
+/out
 /node_modules
 /*.vsix

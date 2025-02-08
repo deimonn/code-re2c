@@ -1,4 +1,4 @@
-/*── extension.js ── Main script for code-re2c ──*
+/*── extension.ts ── Main script for code-re2c ──*
  │
  │ Copyright (c) 2024-2025 Deimonn (a.k.a. Nahuel S. Cisterna)
  │
@@ -10,30 +10,20 @@
 
 // SPDX-License-Identifier: MIT
 
-const child_process = require("child_process");
-const minimatch = require("minimatch");
-const vscode = require("vscode");
+import child_process = require("child_process");
 
-/**
- * Output channel, for debugging purposes.
- * @type {vscode.OutputChannel}
- */
-let outputChannel;
+import * as vscode from "vscode";
+import * as minimatch from "minimatch";
 
-/**
- * Diagnostics collection.
- * @type {vscode.DiagnosticCollection}
- */
-let diagnosticCollection;
-
-/**
- * List of languages registered in this VSCode instance.
- * @type {string[]}
- */
-let registeredLanguages = [];
+/** Output channel, for debugging purposes. */
+let outputChannel: vscode.OutputChannel;
+/** Diagnostics collection. */
+let diagnosticCollection: vscode.DiagnosticCollection;
+/** List of languages registered in this VSCode instance. */
+let registeredLanguages: string[] = [];
 
 /** Map of re2c binary names to associated languages. */
-const re2cBinaries = {
+const re2cBinaries: { [key: string]: string } = {
     re2c: "cpp",
     re2d: "d",
     re2go: "go",
@@ -48,7 +38,7 @@ const re2cBinaries = {
 };
 
 /** Map of --lang flag values to associated languages. */
-const re2cLanguages = {
+const re2cLanguages: { [key: string]: string } = {
     c: "cpp",
     d: "d",
     go: "go",
@@ -64,16 +54,12 @@ const re2cLanguages = {
 };
 
 /** Generates a string timestamp. */
-function timestamp() {
+function timestamp(): string {
     return new Date().toISOString();
 }
 
-/**
- * Checks if the path is satisfied by any of the given globs.
- * @param {string} path
- * @param {string[]} globs
- */
-function match(path, globs) {
+/** Checks if the path is satisfied by any of the given globs. */
+function match(path: string, globs: string[]): boolean {
     let matched = false;
 
     for (const glob of globs) {
@@ -86,15 +72,14 @@ function match(path, globs) {
     return matched;
 }
 
-/**
- * Detect and update a document's language.
- * @param {vscode.TextDocument} document
- * @param {vscode.WorkspaceConfiguration} configuration
- */
-function detectLanguage(document, configuration) {
+/** Detect and update a document's language. */
+function detectLanguage(
+    document: vscode.TextDocument,
+    configuration: vscode.WorkspaceConfiguration
+): void {
     // Fetch configuration.
-    const customLanguageId = configuration.get("re2c.customLanguageId") ?? null;
-    const defaultLanguageId = configuration.get("re2c.defaultLanguageId") ?? null;
+    const customLanguageId = configuration.get<string | null>("re2c.customLanguageId") ?? null;
+    const defaultLanguageId = configuration.get<string | null>("re2c.defaultLanguageId") ?? null;
 
     // Fetch first document line.
     const line = document.lineAt(0).text;
@@ -136,6 +121,9 @@ function detectLanguage(document, configuration) {
             // Fix with comment.
             if (option === "Add Comment") {
                 const textEditor = vscode.window.activeTextEditor;
+                if (textEditor === undefined) {
+                    return;
+                }
 
                 textEditor
                     .edit((b) => b.insert(new vscode.Position(0, 0), "// re2c --lang c\n"))
@@ -207,11 +195,8 @@ function detectLanguage(document, configuration) {
  * Detect language and publish diagnostics for the document.
  *
  * If `force` is true, updates the document regardless of whether its open in an editor yet or not.
- *
- * @param {vscode.TextDocument} document
- * @param {boolean} force
  */
-function updateDocument(document, force) {
+function updateDocument(document: vscode.TextDocument, force: boolean): void {
     // Only operate on text documents that are open on the editor, unless `force` is true.
     if (!force) {
         let index = vscode.window.visibleTextEditors.findIndex(e => e.document.uri == document.uri);
@@ -223,11 +208,11 @@ function updateDocument(document, force) {
     // Fetch configuration.
     const configuration = vscode.workspace.getConfiguration("code-re2c");
 
-    const re2c = configuration.get("re2c.path") ?? "re2c";
-    const args = configuration.get("re2c.arguments") ?? ["-W"];
-    const detect = configuration.get("re2c.detect") ?? ["**/*.re"];
-    const ignore = configuration.get("re2c.ignore") ?? [];
-    const customLanguageId = configuration.get("re2c.customLanguageId") ?? null;
+    const re2c = configuration.get<string>("re2c.path") ?? "re2c";
+    const args = configuration.get<string[]>("re2c.arguments") ?? ["-W"];
+    const detect = configuration.get<string[]>("re2c.detect") ?? ["**/*.re"];
+    const ignore = configuration.get<string[]>("re2c.ignore") ?? [];
+    const customLanguageId = configuration.get<string | null>("re2c.customLanguageId") ?? null;
 
     // Skip ignored files.
     if (match(document.uri.fsPath, ignore)) {
@@ -308,7 +293,7 @@ function updateDocument(document, force) {
             const columnno = Number.parseInt(match[3]);
 
             // Extract kind.
-            let kind;
+            let kind: vscode.DiagnosticSeverity;
             switch (match[4]) {
                 case "error":
                     kind = vscode.DiagnosticSeverity.Error;
@@ -343,19 +328,13 @@ function updateDocument(document, force) {
     });
 }
 
-/**
- * Clears diagnostics from the document.
- * @param {vscode.TextDocument} document
- */
-function resetDocument(document) {
+/** Clears diagnostics from the document. */
+function resetDocument(document: vscode.TextDocument): void {
     diagnosticCollection.set(document.uri, undefined);
 }
 
-/**
- * Extension activation event.
- * @param {vscode.ExtensionContext} context
- */
-async function activate(context) {
+/** Extension activation event. */
+export async function activate(context: vscode.ExtensionContext) {
     // Fetch registered languages.
     registeredLanguages = await vscode.languages.getLanguages();
 
@@ -375,8 +354,3 @@ async function activate(context) {
         vscode.workspace.onDidCloseTextDocument(resetDocument)
     );
 }
-
-// Exports.
-module.exports = {
-    activate
-};
