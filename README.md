@@ -27,6 +27,7 @@ Keyword          | Flag             | Language
 `re2ocaml`       | `--lang ocaml`   | OCaml
 `re2py`          | `--lang python`  | Python
 `re2rust`        | `--lang rust`    | Rust
+`re2swift`       | `--lang swift`   | Swift
 `re2v`           | `--lang v`       | V
 `re2zig`         | `--lang zig`     | Zig
 Any of the above | `--lang none`    | *User-defined*

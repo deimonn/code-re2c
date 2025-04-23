@@ -20,6 +20,7 @@
         "re2ocaml", "ocaml",
         "re2py", "py", "python",
         "re2rust", "rs", "rust",
+        "re2swift", "swift",
         "re2v", "v",
         "re2zig", "zig",
         "lex", "lexer", "generator"
@@ -109,6 +110,7 @@
                     "source.ocaml",
                     "source.python",
                     "source.rust",
+                    "source.swift",
                     "source.v",
                     "source.zig"
                 ]

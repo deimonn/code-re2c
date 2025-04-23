@@ -33,6 +33,7 @@ const re2cBinaries: { [key: string]: string } = {
     re2ocaml: "ocaml",
     re2py: "python",
     re2rust: "rust",
+    re2swift: "swift",
     re2v: "v",
     re2zig: "zig"
 };
@@ -48,6 +49,7 @@ const re2cLanguages: { [key: string]: string } = {
     ocaml: "ocaml",
     python: "python",
     rust: "rust",
+    swift: "swift",
     v: "v",
     zig: "zig",
     none: "user-defined"
@@ -236,6 +238,7 @@ function updateDocument(document: vscode.TextDocument, force: boolean): void {
         case "ocaml":
         case "python":
         case "rust":
+        case "swift":
         case "v":
         case "zig":
             args.push("--lang", document.languageId);
