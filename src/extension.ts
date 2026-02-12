@@ -1,10 +1,10 @@
 /*── extension.ts ── Main script for code-re2c ──*
  │
- │ Copyright (c) 2024-2025 Deimonn (a.k.a. Nahuel S. Cisterna)
+ │ Copyright (c) 2024-2026 Deimonn
  │
  │ This file is licensed under the MIT License.
  │
- │ See https://raw.githubusercontent.com/deimonn/code-re2c/master/LICENSE for license information.
+ │ See https://deimonn.dev/code-re2c/license.txt for icense information.
  │
  */
 
