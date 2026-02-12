@@ -2,7 +2,7 @@
     "name": "code-re2c",
     "version": "0.5.0",
     "displayName": "Code re2c",
-    "description": "Code in re2c! Experimental linting and syntax highlighting.",
+    "description": "Linting and syntax highlighting for re2c",
     "publisher": "deimonn",
     "license": "MIT",
     "repository": {
