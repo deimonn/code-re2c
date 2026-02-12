@@ -160,8 +160,8 @@
                     }
                 },
                 {
-                    "comment": "Include directive.",
-                    "match": "(!)(include)\\b",
+                    "comment": "Include directive and actions.",
+                    "match": "(!)(include|entry|pre_rule|post_rule)\\b",
                     "captures": {
                         "1": { "name": "punctuation.definition.directive.re2c" },
                         "2": { "name": "keyword.control.directive.$2.re2c" }
