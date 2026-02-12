@@ -10,15 +10,20 @@
 
 // SPDX-License-Identifier: MIT
 
-import child_process = require("child_process");
+import { execFile } from "child_process";
 
-import * as vscode from "vscode";
-import * as minimatch from "minimatch";
+import {
+    commands, languages, window, workspace,
+    Diagnostic, DiagnosticCollection, DiagnosticSeverity, ExtensionContext,
+    OutputChannel, Position, Range, TextDocument, WorkspaceConfiguration
+} from "vscode";
+
+import { minimatch } from "minimatch";
 
 /** Output channel, for debugging purposes. */
-let outputChannel: vscode.OutputChannel;
+let outputChannel: OutputChannel;
 /** Diagnostics collection. */
-let diagnosticCollection: vscode.DiagnosticCollection;
+let diagnosticCollection: DiagnosticCollection;
 /** List of languages registered in this VSCode instance. */
 let registeredLanguages: string[] = [];
 
@@ -65,7 +70,7 @@ function match(path: string, globs: string[]): boolean {
     let matched = false;
 
     for (const glob of globs) {
-        if (minimatch.minimatch(path, glob)) {
+        if (minimatch(path, glob)) {
             matched = true;
             break;
         }
@@ -76,12 +81,14 @@ function match(path: string, globs: string[]): boolean {
 
 /** Detect and update a document's language. */
 function detectLanguage(
-    document: vscode.TextDocument,
-    configuration: vscode.WorkspaceConfiguration
+    document: TextDocument,
+    configuration: WorkspaceConfiguration
 ): void {
     // Fetch configuration.
-    const customLanguageId = configuration.get<string | null>("re2c.customLanguageId") ?? null;
-    const defaultLanguageId = configuration.get<string | null>("re2c.defaultLanguageId") ?? null;
+    const customLanguageId =
+        configuration.get<string | null>("re2c.customLanguageId") ?? null;
+    const defaultLanguageId =
+        configuration.get<string | null>("re2c.defaultLanguageId") ?? null;
 
     // Fetch first document line.
     const line = document.lineAt(0).text;
@@ -102,38 +109,41 @@ function detectLanguage(
         // Attempt to default the language.
         if (defaultLanguageId) {
             if (!registeredLanguages.includes(defaultLanguageId)) {
-                vscode.window.showErrorMessage(
-                    `No registered language with identifier "${defaultLanguageId}".`
+                window.showErrorMessage(
+                    `No registered language with identifier ` +
+                    `"${defaultLanguageId}".`
                 );
 
                 return;
             }
 
-            vscode.languages.setTextDocumentLanguage(document, defaultLanguageId);
+            languages.setTextDocumentLanguage(document, defaultLanguageId);
             return;
         }
 
         // Show language detection failure notification.
-        vscode.window.showWarningMessage(
-            `Could not detect language of document "${document.uri.fsPath}"; consider adding ` +
-            `the re2c invocation as a comment at the top, or setting a default language to ` +
-            `assume in the settings.`,
+        window.showWarningMessage(
+            `Could not detect language of document "${document.uri.fsPath}"; ` +
+            `consider adding the re2c invocation as a comment at the top, or ` +
+            `setting a default language to assume in the settings.`,
             "Add Comment", "Go to Settings", "Dismiss"
         ).then(option => {
             // Fix with comment.
             if (option === "Add Comment") {
-                const textEditor = vscode.window.activeTextEditor;
+                const textEditor = window.activeTextEditor;
                 if (textEditor === undefined) {
                     return;
                 }
 
                 textEditor
-                    .edit((b) => b.insert(new vscode.Position(0, 0), "// re2c --lang c\n"))
+                    .edit((b) => {
+                        b.insert(new Position(0, 0), "// re2c --lang c\n");
+                    })
                     .then(() => {
-                        vscode.window.showTextDocument(textEditor.document, {
-                            selection: new vscode.Range(
-                                new vscode.Position(0, 0),
-                                new vscode.Position(0, 16)
+                        window.showTextDocument(textEditor.document, {
+                            selection: new Range(
+                                new Position(0, 0),
+                                new Position(0, 16)
                             )
                         });
                     });
@@ -143,7 +153,7 @@ function detectLanguage(
 
             // Fix with setting.
             if (option === "Go to Settings") {
-                vscode.commands.executeCommand(
+                commands.executeCommand(
                     "workbench.action.openSettings",
                     "code-re2c.re2c.defaultLanguageId"
                 );
@@ -173,7 +183,7 @@ function detectLanguage(
 
         // Check that the ID is registed, or show an error otherwise.
         if (!registeredLanguages.includes(customLanguageId)) {
-            vscode.window.showErrorMessage(
+            window.showErrorMessage(
                 `No registered language with identifier "${customLanguageId}".`
             );
 
@@ -190,31 +200,37 @@ function detectLanguage(
     }
 
     // Update document language.
-    vscode.languages.setTextDocumentLanguage(document, language);
+    languages.setTextDocumentLanguage(document, language);
 }
 
 /**
  * Detect language and publish diagnostics for the document.
  *
- * If `force` is true, updates the document regardless of whether its open in an editor yet or not.
+ * If `force` is true, updates the document regardless of whether its open in an
+ * editor yet or not.
  */
-function updateDocument(document: vscode.TextDocument, force: boolean): void {
-    // Only operate on text documents that are open on the editor, unless `force` is true.
+function updateDocument(document: TextDocument, force: boolean): void {
+    // Only operate on text documents that are open on the editor, unless
+    // `force` is true.
     if (!force) {
-        let index = vscode.window.visibleTextEditors.findIndex(e => e.document.uri == document.uri);
+        let index = window.visibleTextEditors.findIndex(e => {
+            return e.document.uri == document.uri;
+        });
+
         if (index == -1) {
             return;
         }
     }
 
     // Fetch configuration.
-    const configuration = vscode.workspace.getConfiguration("code-re2c");
+    const configuration = workspace.getConfiguration("code-re2c");
 
     const re2c = configuration.get<string>("re2c.path") ?? "re2c";
     const args = configuration.get<string[]>("re2c.arguments") ?? ["-W"];
     const detect = configuration.get<string[]>("re2c.detect") ?? ["**/*.re"];
     const ignore = configuration.get<string[]>("re2c.ignore") ?? [];
-    const customLanguageId = configuration.get<string | null>("re2c.customLanguageId") ?? null;
+    const customLanguageId =
+        configuration.get<string | null>("re2c.customLanguageId") ?? null;
 
     // Skip ignored files.
     if (match(document.uri.fsPath, ignore)) {
@@ -267,11 +283,16 @@ function updateDocument(document: vscode.TextDocument, force: boolean): void {
     args.push(document.uri.fsPath);
 
     // Execute `re2c` with the given arguments.
-    outputChannel.appendLine(`[${timestamp()}] Executing '${re2c}' with args: ${args.join(" ")}`);
-    child_process.execFile(re2c, args, (error, _, stderr) => {
+    outputChannel.appendLine(
+        `[${timestamp()}] Executing '${re2c}' with args: ${args.join(" ")}`
+    );
+
+    execFile(re2c, args, (error, _, stderr) => {
         // Check for error.
         if (error) {
-            outputChannel.appendLine(`[${timestamp()}] Errored: ${error.message}`);
+            outputChannel.appendLine(
+                `[${timestamp()}] Errored: ${error.message}`
+            );
         }
 
         // Parse diagnostics.
@@ -280,7 +301,10 @@ function updateDocument(document: vscode.TextDocument, force: boolean): void {
             outputChannel.appendLine(line);
 
             // Match regular expression.
-            const match = line.match(/((?:[a-z]:)?[^:]+):([0-9]+):([0-9]+): (error|warning):(.*)/i);
+            const regex =
+                /((?:[a-z]:)?[^:]+):([0-9]+):([0-9]+): (error|warning):(.*)/i;
+
+            const match = line.match(regex);
             if (!match) {
                 continue;
             }
@@ -296,14 +320,14 @@ function updateDocument(document: vscode.TextDocument, force: boolean): void {
             const columnno = Number.parseInt(match[3]);
 
             // Extract kind.
-            let kind: vscode.DiagnosticSeverity;
+            let kind: DiagnosticSeverity;
             switch (match[4]) {
                 case "error":
-                    kind = vscode.DiagnosticSeverity.Error;
+                    kind = DiagnosticSeverity.Error;
                     break;
 
                 case "warning":
-                    kind = vscode.DiagnosticSeverity.Warning;
+                    kind = DiagnosticSeverity.Warning;
                     break;
 
                 default:
@@ -315,10 +339,10 @@ function updateDocument(document: vscode.TextDocument, force: boolean): void {
 
             // Push.
             diagnostics.push(
-                new vscode.Diagnostic(
-                    new vscode.Range(
-                        new vscode.Position(lineno, columnno),
-                        new vscode.Position(lineno, columnno + 1)
+                new Diagnostic(
+                    new Range(
+                        new Position(lineno, columnno),
+                        new Position(lineno, columnno + 1)
                     ),
                     message,
                     kind
@@ -332,28 +356,33 @@ function updateDocument(document: vscode.TextDocument, force: boolean): void {
 }
 
 /** Clears diagnostics from the document. */
-function resetDocument(document: vscode.TextDocument): void {
+function resetDocument(document: TextDocument): void {
     diagnosticCollection.set(document.uri, undefined);
 }
 
 /** Extension activation event. */
-export async function activate(context: vscode.ExtensionContext) {
+export async function activate(context: ExtensionContext) {
     // Fetch registered languages.
-    registeredLanguages = await vscode.languages.getLanguages();
+    registeredLanguages = await languages.getLanguages();
 
     // Push context subscriptions.
     context.subscriptions.push(
         // Create the output channel.
-        outputChannel = vscode.window.createOutputChannel("Code re2c", "log"),
+        outputChannel = window.createOutputChannel("Code re2c", "log"),
 
         // Create the diagnostics collection.
-        diagnosticCollection = vscode.languages.createDiagnosticCollection("re2c"),
+        diagnosticCollection = languages.createDiagnosticCollection("re2c"),
 
-        // Update event.
-        vscode.workspace.onDidOpenTextDocument((document) => updateDocument(document, true)),
-        vscode.workspace.onDidSaveTextDocument((document) => updateDocument(document, false)),
+        // Update events.
+        workspace.onDidOpenTextDocument((document) => {
+            updateDocument(document, true);
+        }),
+
+        workspace.onDidSaveTextDocument((document) => {
+            updateDocument(document, false);
+        }),
 
         // Reset event.
-        vscode.workspace.onDidCloseTextDocument(resetDocument)
+        workspace.onDidCloseTextDocument(resetDocument)
     );
 }
