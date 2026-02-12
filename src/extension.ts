@@ -4,7 +4,7 @@
  │
  │ This file is licensed under the MIT License.
  │
- │ See https://deimonn.dev/code-re2c/license.txt for icense information.
+ │ See https://deimonn.dev/code-re2c/license.txt for license information.
  │
  */
 
