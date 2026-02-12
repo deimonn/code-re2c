@@ -319,7 +319,7 @@
                 },
                 {
                     "comment": "Various operators.",
-                    "match": "\\.|\\\\|\\*|\\+|\\?|!|\\||/",
+                    "match": "\\.|\\\\|\\*|\\+|\\?|!|\\||/|\\$|:=",
                     "name": "keyword.operator.other.re2c"
                 },
                 {
