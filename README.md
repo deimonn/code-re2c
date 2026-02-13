@@ -1,10 +1,8 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/deimonn/code-re2c/refs/heads/master/assets/logo.png">
+  <img src="https://raw.githubusercontent.com/deimonn/code-re2c/refs/heads/master/images/logo.png">
 </p>
 
-Experimental linting and syntax highlighting for [re2c](http://re2c.org)!
-
-Now with support for re2c 4.0.
+Experimental linting and syntax highlighting for [re2c](http://re2c.org)! Up-to-date with re2c 4.4.
 
 ## Usage
 

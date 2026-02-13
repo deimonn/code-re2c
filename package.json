@@ -9,7 +9,7 @@
         "type": "git",
         "url": "https://github.com/deimonn/code-re2c"
     },
-    "icon": "assets/logo.png",
+    "icon": "assets/icon.png",
     "keywords": [
         "re2c", "c", "cpp", "c++",
         "re2d", "d",
