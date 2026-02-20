@@ -385,4 +385,9 @@ export async function activate(context: ExtensionContext) {
         // Reset event.
         workspace.onDidCloseTextDocument(resetDocument)
     );
+
+    // Update already open text editors.
+    window.visibleTextEditors.forEach((editor) => {
+        updateDocument(editor.document, true);
+    });
 }
