@@ -14,7 +14,7 @@
                     "comment": "Block followed by only one identifier.",
                     "begin": "\\s*(/\\*)(!)(?:(local|rules|use)(:))?(re2c)\\b(?:(:)([A-Za-z_][A-Za-z_0-9]*))?",
                     "beginCaptures": {
-                        "1": { "name": "punctuation.definition.comment.begin.c" },
+                        "1": { "name": "punctuation.definition.comment.begin.re2c comment.block.re2c" },
                         "2": { "name": "punctuation.definition.directive.re2c" },
                         "3": {
                             "patterns": [
@@ -35,7 +35,7 @@
                     },
                     "end": "\\s*(\\*/)",
                     "endCaptures": {
-                        "1": { "name": "punctuation.definition.comment.end.c" }
+                        "1": { "name": "punctuation.definition.comment.end.re2c comment.block.re2c" }
                     },
                     "patterns": [{
                         "include": "#statements"
@@ -45,7 +45,7 @@
                     "comment": "Block followed by any number of identifiers.",
                     "begin": "\\s*(/\\*)(!)(max|maxnmatch|stags|mtags|getstate|conditions|svars|mvars)(:)(re2c)\\b((?::[A-Za-z_][A-Za-z_0-9]*)*)",
                     "beginCaptures": {
-                        "1": { "name": "punctuation.definition.comment.begin.c" },
+                        "1": { "name": "punctuation.definition.comment.begin.re2c comment.block.re2c" },
                         "2": { "name": "punctuation.definition.directive.re2c" },
                         "3": { "name": "keyword.control.directive.$3.re2c" },
                         "4": { "name": "punctuation.separator.colon.re2c" },
@@ -65,7 +65,7 @@
                     },
                     "end": "\\s*(\\*/)",
                     "endCaptures": {
-                        "1": { "name": "punctuation.definition.comment.end.c" }
+                        "1": { "name": "punctuation.definition.comment.end.re2c comment.block.re2c" }
                     },
                     "patterns": [{
                         "include": "#statements"
@@ -75,7 +75,7 @@
                     "comment": "Block followed by string.",
                     "begin": "\\s*(/\\*)(!)(include)(:)(re2c)\\s*(?:(\")((?:\\\\\"|[^\"\n])*)(\"))?",
                     "beginCaptures": {
-                        "1": { "name": "punctuation.definition.comment.begin.c" },
+                        "1": { "name": "punctuation.definition.comment.begin.re2c comment.block.re2c" },
                         "2": { "name": "punctuation.definition.directive.re2c" },
                         "3": { "name": "keyword.control.directive.$3.re2c" },
                         "4": { "name": "punctuation.separator.colon.re2c" },
@@ -91,7 +91,7 @@
                     },
                     "end": "\\s*(\\*/)",
                     "endCaptures": {
-                        "1": { "name": "punctuation.definition.comment.end.c" }
+                        "1": { "name": "punctuation.definition.comment.end.re2c comment.block.re2c" }
                     },
                     "patterns": [{
                         "include": "#statements"
@@ -101,7 +101,7 @@
                     "comment": "Block followed by on/off.",
                     "begin": "\\s*(/\\*)(!)(header)(:)(re2c)(?:(:)(on|off)\\b)?",
                     "beginCaptures": {
-                        "1": { "name": "punctuation.definition.comment.begin.c" },
+                        "1": { "name": "punctuation.definition.comment.begin.re2c comment.block.re2c" },
                         "2": { "name": "punctuation.definition.directive.re2c" },
                         "3": { "name": "keyword.control.directive.$0.re2c" },
                         "4": { "name": "punctuation.separator.colon.re2c" },
@@ -111,7 +111,7 @@
                     },
                     "end": "\\s*(\\*/)",
                     "endCaptures": {
-                        "1": { "name": "punctuation.definition.comment.end.c" }
+                        "1": { "name": "punctuation.definition.comment.end.re2c comment.block.re2c" }
                     },
                     "patterns": [{
                         "include": "#statements"
@@ -121,7 +121,7 @@
                     "comment": "Block followed by nothing.",
                     "begin": "\\s*(/\\*)(!)(types|ignore)(:)(re2c)\\b",
                     "beginCaptures": {
-                        "1": { "name": "punctuation.definition.comment.begin.c" },
+                        "1": { "name": "punctuation.definition.comment.begin.re2c comment.block.re2c" },
                         "2": { "name": "punctuation.definition.directive.re2c" },
                         "3": { "name": "keyword.control.directive.$3.re2c" },
                         "4": { "name": "punctuation.separator.colon.re2c" },
@@ -129,7 +129,7 @@
                     },
                     "end": "\\s*(\\*/)",
                     "endCaptures": {
-                        "1": { "name": "punctuation.definition.comment.end.c" }
+                        "1": { "name": "punctuation.definition.comment.end.re2c comment.block.re2c" }
                     },
                     "patterns": [{
                         "include": "#statements"
